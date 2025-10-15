@@ -1,0 +1,17 @@
+###
+GET http://localhost:3000/
+
+###
+POST http://localhost:3000/
+Content-Type: application/json
+
+{
+  "name": "Manuel Guest"
+  "reservations": [
+    {
+      "dateIn": "06102025",
+      "dateOut": "09102025",
+      "cost": "7000"
+    }
+  ]
+}
