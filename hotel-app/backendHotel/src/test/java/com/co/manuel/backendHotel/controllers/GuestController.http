@@ -1,17 +1,32 @@
 ###
-GET http://localhost:3000/
+GET http://localhost:3000/api/v1/guests
 
 ###
-POST http://localhost:3000/
+POST http://localhost:3000/api/v1/guests
 Content-Type: application/json
 
 {
-  "name": "Manuel Guest"
+  "name": "Manuel Guest",
   "reservations": [
     {
       "dateIn": "06102025",
       "dateOut": "09102025",
       "cost": "7000"
+    }
+  ]
+}
+
+###
+PUT http://localhost:3000/api/v1/guests/edit/1
+Content-Type: application/json
+
+{
+  "name": "Manuel Guest Updated",
+  "reservations": [
+    {
+      "dateIn": "06102025",
+      "dateOut": "09102025",
+      "cost": "8000"
     }
   ]
 }
