@@ -47,7 +47,11 @@ public class GuestServiceImp implements GuestService {
     Guest guest = guestMapper.mapperGuestFromGuestDTO(guestDTO);
     guest = guestRepository.save(guest);
     GuestDTO guestDTO2 = guestMapper.mapperGuestDTOFromGuest(guest);
-    return guestDTO2;
+    GuestDTO guestDTOresponse = null;
+    if (guestDTO2 != null && guestDTO2.name() != null) {
+      guestDTOresponse = new GuestDTO(guestDTO2.id(), guestDTO2.name().trim().split(" ")[0], guestDTO2.reservations());
+    }
+    return guestDTOresponse;
   }
 
   @Override
