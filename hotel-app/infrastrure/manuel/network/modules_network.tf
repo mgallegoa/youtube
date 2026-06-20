@@ -24,7 +24,7 @@ module "vpc" {
 module "sg_hotel_app_https_http_ssh" {
   source = "terraform-aws-modules/security-group/aws"
 
-  name        = "SG-Hotel-app"
+  name        = "SG-Hotel-app_http_https_ssh"
   description = "Security group for dev-container"
   vpc_id      = module.vpc.vpc_id
 
@@ -69,19 +69,37 @@ module "sg_hotel_app_https_http_ssh" {
       rule        = "ssh-tcp"
       cidr_blocks = "0.0.0.0/0"
     },
+    {
+      from_port   = 3306
+      to_port     = 3306
+      protocol    = "tcp"
+      description = "Connect to mysql port"
+      cidr_blocks = "0.0.0.0/0"
+    },
   ]
+
+  tags = {
+    Name = "sg-dev-container-public-subnet"
+  }
 }
 module "sg_hotel_app_ssh" {
   source = "terraform-aws-modules/security-group/aws"
 
-  name        = "SG-Hotel-app"
+  name        = "SG-Hotel-app_ssh"
   description = "Security group for database instance"
   vpc_id      = module.vpc.vpc_id
 
-  ingress_with_cidr_blocks = [
+  ingress_with_source_security_group_id = [
     {
-      rule        = "ssh-tcp"
-      cidr_blocks = "0.0.0.0/0"
+      from_port                = 3306
+      to_port                  = 3306
+      protocol                 = "tcp"
+      description              = "mysql server port"
+      source_security_group_id = module.sg_hotel_app_https_http_ssh.security_group_id
+    },
+    {
+      rule                     = "ssh-tcp"
+      source_security_group_id = module.sg_hotel_app_https_http_ssh.security_group_id
     },
   ]
   egress_with_cidr_blocks = [
@@ -89,5 +107,13 @@ module "sg_hotel_app_ssh" {
       rule        = "ssh-tcp"
       cidr_blocks = "0.0.0.0/0"
     },
+    {
+      rule        = "all-all"
+      cidr_blocks = "0.0.0.0/0"
+    },
   ]
+
+  tags = {
+    Name = "sg-db-private-subnet"
+  }
 }
